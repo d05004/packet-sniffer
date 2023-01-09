@@ -80,7 +80,7 @@ for ts,raw_pkt in sniffer:
     pkt=BeaconFrame(raw_pkt)
     try:
         if pkt.bss_id not in bssinfo.keys():
-            if pkt.ssid=="":
+            if pkt.ssid==b"":
                 bssinfo[pkt.bss_id]=[1,"<legth: %d>"% pkt.tag_len]
             else:
                 bssinfo[pkt.bss_id]=[1,pkt.ssid] # beacons, ESSID
