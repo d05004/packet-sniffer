@@ -49,8 +49,6 @@ class BeaconFrame():
         self.cap_info=int.from_bytes(self.fixed_param[10:12],'little')
 
     def parseTaggedParam(self):
-        if len(self.tagged_param)==0:
-            return
         self.tag_num=self.tagged_param[0]
         self.tag_len=int(self.tagged_param[1])
         try:
@@ -70,7 +68,7 @@ bssinfo={}
 
 device=sys.argv[1]
 
-sniffer=pcap.pcap(name=device,promisc=True,immediate=True,timeout_ms=50)
+sniffer=pcap.pcap(name=device,promisc=True,timeout_ms=50)
 
 for ts,raw_pkt in sniffer:
     frame_type=raw_pkt[24:26]
@@ -80,7 +78,7 @@ for ts,raw_pkt in sniffer:
     pkt=BeaconFrame(raw_pkt)
     try:
         if pkt.bss_id not in bssinfo.keys():
-            if pkt.ssid==b"":
+            if pkt.ssid[0]=="\x00":
                 bssinfo[pkt.bss_id]=[1,"<legth: %d>"% pkt.tag_len]
             else:
                 bssinfo[pkt.bss_id]=[1,pkt.ssid] # beacons, ESSID
